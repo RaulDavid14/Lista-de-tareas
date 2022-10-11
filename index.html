@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="widt, initial-scale=1.0">
+    
+    <title>Administrador de tiempo</title>
+
+    <link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+    <div id="toodo">
+        <div class="contenido">
+
+            <h1>Lista de tareas </h1>
+            
+            <div v-if="!editado"> 
+                
+                <input type="text" v-model="todo" placeholder="Escribe una tarea">
+                
+                <div v-if="todo != '' ">
+                    <input type="submit" value="Agregar tarea" @click="guardarTarea">
+                </div>
+            
+            </div>
+            <div v-else>
+                
+                <div v-if="todo != '' ">
+                    <input type="submit" value="Actualizar Tarea" @click="actualizarTarea">
+                </div>
+                <input type="text" v-model="todo" placeholder="Escribe la tarea">
+                
+
+            </div>
+
+            <p> Tareas a realizar </p>
+            <ol>
+                
+                <li v-for="(todo, index) in todos">
+                    {{todo}} 
+                    
+                    <button @click="editarTarea(index, todo)">Editar Tarea </button>
+                    <button @click="marcarPendiente(index)">Marcar como pendiente</button>
+                    <button @click="quitarTarea(index)">Tarea Completada</button>
+                    
+
+                </li>            
+            </ol>
+            <p>Tareas Pendientes</p>
+            
+            <ol>
+              
+                <li v-for="pendiente in pendientes">
+                    {{pendiente}}
+                    
+                    <button @click="quitarTareaPendiente(pendiente)">Tarea Completada</button>
+                </li>
+            </ol>
+            <p> Tareas Completadas</p>
+            <ol>
+                <li v-for="hecho in realizado">
+                    {{hecho}}
+                </li>               
+            </ol>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+
+    <script>
+        new Vue({
+            el: '#toodo',
+
+            data: {
+                pendiente:'',
+                hecho: '',
+                editado : false,
+                editadoPendiente: false, 
+                selectedIndex: null,
+                todo: '',
+                todos:[],
+                realizado: [],
+                pendientes: []
+            },
+
+            methods: {
+                guardarTarea(){
+                    this.hecho = this.todo
+                    this.pendiente = this.todo
+                    this.todos.push(this.todo)
+                    this.todo = ''
+                },
+
+                editarTarea(index, todo){
+                    this.todo = todo
+                    this.selectedIndex = index
+                    this.editado = true
+                },
+
+                editarTareaPendiente(index, pendiente){
+                    this.selectedIndex = index
+                    this.pendiente = pendiente
+                    this.editadoPendiente = true
+                    
+                },
+                actualizarTarea(){
+                    this.todos.splice(this.selectedIndex, 1, this.todo)
+                    this.editado = false
+                    this.todo = ''
+                },
+
+                quitarTarea(index){
+                    this.realizado.push(this.hecho)
+                    this.todos.splice(index, 1)
+                    this.todo = ''
+                },
+                quitarTareaPendiente(index){
+                    this.realizado.push(this.hecho)
+                    this.pendientes.splice(index, 1)
+                    this.todo = ''
+                    this.index = ''
+                },
+                marcarPendiente(index){
+                    this.pendientes.push(this.pendiente)
+                    this.todos.splice(index, 1)
+                    this.todo = ''
+                
+                }
+
+
+            }
+        })
+    </script>
+</body>
+</html>
